@@ -5,8 +5,11 @@ Statistical code used for the paper, "Assessing the Causal Relevance of Actionab
 R version 4.2.3
 
 ## Analysis overview
+Multiple two sample Mendelian randomization anlayses were performed using the following data.
 ### Instrument-exposure data
+To instrument the selected DMARD targets (PLA2G1B, NFKB1, ACE2, LTA, FCGR2A, FCGR2B, FCGR3B, TNF, IL6R), we pulled lead SNVs from the UK BioBank Pharma Proteomics Project via synapse.org (project ID: syn51364943).
+
+The .tar files for each target were manually downloaded and read into R using Mac Terminal. The data was then cleaned and reorganized to match the required column structure for MR analysis. If you want to skip these steps, a file is included in this project containing the SNVs,post-clumping, that were used in MR analyses.
 
 ### AD outcome data
-
-## Included code
+Outcome data was sourced from a large-scale GWAS on AD risk loci. Permission for access may be requested via The National Institute on Aging Genetics of Alzheimer’s Disease Data Storage Site repository (ID: NG00075).
