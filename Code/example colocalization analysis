@@ -61,8 +61,7 @@ kunkle <- rename(kunkle, c("other_allele.outcome" = "A2"))
 kunkle <- rename(kunkle, c("SNP" = "ID"))
 kunkle <- rename(kunkle, c("beta.outcome" = "Beta"))
 kunkle <- rename(kunkle, c("se.outcome" = "SE"))
-kunkle <- rename(kunkle, c("pval.outcome" = "Pvalue"))
-kunkle$N <- "X"                                  
+kunkle <- rename(kunkle, c("pval.outcome" = "P.value"))                               
 kunkle <- rename(kunkle, c("chr.outcome" = "CHROM"))
 kunkle <- rename(kunkle, c("pos.outcome" = "POS")) 
 kunkle$varbeta <- kunkle$SE^2                    
