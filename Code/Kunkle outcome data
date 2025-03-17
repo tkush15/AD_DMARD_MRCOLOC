@@ -7,6 +7,7 @@ library(dplyr)
 # I had the Kunkle data file as a .csv on my Mac so it was read in this way. Please adjust accordingly.
 
 # read in outcome data using TwoSampleMR column structure
+
 kunkle <- read_outcome_data(
   "kunkle.csv", 
   sep = ",", 
