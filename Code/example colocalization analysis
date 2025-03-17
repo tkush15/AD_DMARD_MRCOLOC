@@ -52,8 +52,6 @@ A1A2_ATCG <- function(data) {
   return(data)
 }
 
-
-
 # read in outcome data.
 
 kunkle <- rename(kunkle, c("effect_allele.outcome" = "A1"))
