@@ -7,6 +7,6 @@ R version 4.2.3
 ## Analysis overview
 ### Instrument-exposure data
 
-#### AD outcome data
+### AD outcome data
 
 ## Included code
