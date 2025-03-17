@@ -3,6 +3,13 @@
 # I manually read in the .csv file I had saved of the formatted exposure data but you may use the existing file in your R environment.
 For this code, I will continue to use LTA as an example.
 
+# ensure you have all downloaded packages for MR analysis.
+
+library(TwoSampleMR)
+install.packages("remotes")
+library(remotes)
+remotes::install_github("MRCIEU/TwoSampleMR")
+
 # read in exposure data file and clump SNVs.
 
 LTA <- read_exposure_data(
