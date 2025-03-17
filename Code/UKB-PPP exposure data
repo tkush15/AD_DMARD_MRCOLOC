@@ -28,11 +28,11 @@ LTA_formatted <- LTA_formatted %>% mutate(transformedp = 10^-(LOG10P))
 
 LTA_formatted <- subset(LTA_formatted, select = -c(EXTRA) )
 
-# create new file containing only SNVs meeting the GWAS standard for significance
+# create new file containing only SNVs meeting the GWAS standard for significance.
 LTA_threshold <- LTA_formatted %>% filter(transformedp < 5e-8)
 
 # I chose to write and read in these formatted files as .csv so that I could keep them as such in my desktop. This is optional though.
 
 write.csv(LTA_threshold, file = "LTA.csv")
 
-# perform these functions for the remainder targets
+# perform these functions for the remainder targets.
