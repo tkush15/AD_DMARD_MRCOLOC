@@ -1,0 +1,190 @@
+# download required packages.
+
+library(dplyr)
+library(plyr)
+library(stringr)
+install.packages("coloc")
+library(coloc)
+
+# add colocalization function for data without allele frequencies.
+
+A1A2_ATCG <- function(data) {
+  
+  for(i in 1:dim(data)[1]){
+    if(data$A1[i]=="T" & data$A2[i]=="A"){
+      data$A1[i] <- "A"
+      data$A2[i] <- "T"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+    if(data$A1[i]=="C" & data$A2[i]=="A"){
+      data$A1[i] <- "A"
+      data$A2[i] <- "C"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+    if(data$A1[i]=="C" & data$A2[i]=="T"){
+      data$A1[i] <- "T"
+      data$A2[i] <- "C"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+    if(data$A1[i]=="G" & data$A2[i]=="A"){
+      data$A1[i] <- "A"
+      data$A2[i] <- "G"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+    if(data$A1[i]=="G" & data$A2[i]=="C"){
+      data$A1[i] <- "C"
+      data$A2[i] <- "G"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+    if(data$A1[i]=="G" & data$A2[i]=="T"){
+      data$A1[i] <- "T"
+      data$A2[i] <- "G"
+      data$Beta[i] <- -1*data$Beta[i]
+    }
+    
+  }
+  
+  return(data)
+}
+
+
+
+# read in outcome data.
+
+kunkle <- rename(kunkle, c("effect_allele.outcome" = "A1"))
+kunkle <- rename(kunkle, c("other_allele.outcome" = "A2"))
+kunkle <- rename(kunkle, c("SNP" = "ID"))
+kunkle <- rename(kunkle, c("beta.outcome" = "Beta"))
+kunkle <- rename(kunkle, c("se.outcome" = "SE"))
+kunkle <- rename(kunkle, c("pval.outcome" = "Pvalue"))
+kunkle$N <- "X"                                  
+kunkle <- rename(kunkle, c("chr.outcome" = "CHROM"))
+kunkle <- rename(kunkle, c("pos.outcome" = "POS")) 
+kunkle$varbeta <- kunkle$SE^2                    
+kunkle <- rename(kunkle, c("eaf.outcome" = "A1F"))
+
+kunkle <- kunkle %>% mutate(N = 63296)
+kunkle <- kunkle %>% mutate(s = 21892/63296)
+
+# read in exposure data. You will need to use the unclumped, untouched data from the .tar file.
+
+LTA <- read.csv("LTA_raw.csv")
+
+# transform p-value (similar to MR process) and edit out unncessary columns.
+
+LTA <- LTA %>% mutate(transformedp = 10^-(LOG10P))
+LTA <- subset(LTA, select = -c(ID) )
+LTA <- subset(LTA, select = -c(EXTRA) )
+
+# adjust exposure data to match coloc analysis structure.
+
+LTA <- rename(LTA, c("ALLELE1" = "A1"))
+LTA <- rename(LTA, c("ALLELE0" = "A2"))
+LTA <- rename(LTA, c("SNP" = "ID"))
+LTA <- rename(LTA, c("BETA" = "Beta"))
+LTA <- rename(LTA, c("SE" = "SE"))
+LTA <- rename(LTA, c("transformedp" = "P.value"))
+LTA <- rename(LTA, c("N" = "N"))
+LTA <- rename(LTA, c("CHROM" = "CHROM"))
+LTA <- rename(LTA, c("GENPOS" = "POS"))
+LTA$varbeta <- LTA$SE^2
+LTA <- rename(LTA, c("A1FREQ" = "A1F"))
+
+# select the cis-acting gene region of interest. These are the parameters for LTA using GRCh38.
+
+Gene_UB <- 31574324
+Gene_LB <- 31560610
+
+Chromosome <- 6
+
+# filter to correct chromosome. Add +/- 500kb.
+
+kunkle_gene <- subset(kunkle, CHROM  %in% c(paste(Chromosome)))
+
+MaxV <- Gene_UB + 500000
+
+LowV <- Gene_LB - 500000
+
+kunkle_gene <-  subset(kunkle_gene, POS %in% c(paste(LowV):paste(MaxV) ))
+
+# subset gene to chromosome.
+
+LTA <- subset(LTA, CHROM  %in% c(paste(Chromosome)))
+
+# filter out unwanted data.
+
+kunkle_gene <-  subset(kunkle_gene, kunkle_gene$P.value > 0 ) 
+LTA <-  subset(LTA, protein$P.value > 0 )
+kunkle_gene <- na.omit(kunkle_gene)
+LTA <- na.omit(LTA)
+
+# match both datasets together.
+
+matched <- intersect( LTA$ID, kunkle_gene$ID)
+all <-  union( LTA$ID, kunkle_gene$ID)
+non.matched <- all[!all %in% matched]
+LTA_SNPs <-  protein[ which( LTA$ID %in% matched) , ]
+kunkle_SNPs <- kunkle_gene[ which( kunkle_gene$ID %in% matched), ]
+
+# put SNPs in same order.
+
+LTA_SNPs <- LTA_SNPs[order(LTA_SNPs$ID),]
+kunkle_SNPs <- kunkle_SNPs[order(kunkle_SNPs$ID),]
+
+# harmonize data.
+
+data <- LTA_SNPs
+LTA_Harm <- A1A2_ATCG(data)
+
+data <- kunkle_SNPs
+kunkle_Harm <- A1A2_ATCG(data)
+
+# double check for duplicate SNPs and remove.
+
+LTA_Input <-   LTA_Harm %>% group_by(ID) %>% filter(n() == 1)
+kunkle_Input <- kunkle_Harm %>% group_by(ID) %>% filter(n() == 1)
+
+# using required coloc data.
+
+LTA_Input<- protein_Input[c("ID", "Beta", "P.value", "varbeta", "N" , "A1", "A2")]
+kunkle_Input<- kunkle_Input[c("ID", "Beta", "P.value", "varbeta", "N" , "A1", "A2")]
+
+# set names to match coloc package.
+LTA_Input <-rename(LTA_Input, c("ID" = "snp"))
+LTA_Input <-rename(LTA_Input, c("Beta" = "beta"))
+LTA_Input <-rename(LTA_Input, c("P.value" = "pvalues"))
+LTA_Input <-rename(LTA_Input, c("N" = "N"))
+LTA_Input <-rename(LTA_Input, c("varbeta" = "varbeta"))
+
+kunkle_Input <-rename(kunkle_Input, c("ID" = "snp"))
+kunkle_Input <-rename(kunkle_Input, c("Beta" = "beta"))
+kunkle_Input <-rename(kunkle_Input, c("P.value" = "pvalues"))
+kunkle_Input <-rename(kunkle_Input, c("N" = "N"))
+kunkle_Input <-rename(kunkle_Input, c("varbeta" = "varbeta"))
+
+# convert data to list format.
+
+LTA_List <- as.list(LTA_Input)
+kunkle_List <- as.list(kunkle_Input)
+
+# set data type "quant" or "cc" for case control data. The Kunkle outcome data is case control.
+LTA_List$type = "quant"
+kunkle_List$type = "cc"
+
+# perform coloc with the defult parameters.
+# LTA is dataset 1
+# kunkle_List is dataset 2
+
+coloc.abf(LTA_List, kunkle_List, p1 = 1e-04, p2 = 1e-04, p12 = 1e-05)
+
+cdf <- coloc.abf(LTA_List, kunkle_List, p1 = 1e-04, p2 = 1e-04, p12 = 1e-05)
+
+cdf_results <- cdf$results
+cdf_summary <- cdf$summary
+
+plot(cdf)
