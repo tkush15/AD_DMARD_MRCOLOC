@@ -1,1 +1,30 @@
+# you should have read in the outcome data and have the formatted exposure data for all targets.
 
+# I manually read in the .csv file I had saved of the formatted exposure data but you may use the existing file in your R environment.
+For this code, I will continue to use LTA as an example.
+
+# read in exposure data file and clump SNVs.
+
+LTA <- read_exposure_data(
+  "LTA.csv",
+  clump = TRUE,
+  sep = ",",
+  snp_col = "SNP",
+  beta_col = "BETA",
+  se_col = "SE",
+  eaf_col = "A1FREQ",
+  effect_allele_col = "ALLELE1",
+  other_allele_col = "ALLELE0",
+  pval_col = "transformedp",
+  min_pval = 1e-200,
+  log_pval = FALSE,
+  chr_col = "chrom",
+)
+
+# harmonize clumped exposure data with outcome data and perform MR.
+
+dat <- harmonise_data(LTA, kunkle) 
+mr_results <- mr(dat)
+mr_results
+
+# repeat steps for each target for individual MR analyses.
