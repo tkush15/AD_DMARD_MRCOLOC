@@ -1,1 +1,38 @@
-# reading in transformed .tar files for each chromosome
+# reading in GRCh38 rsID data. This may look differently depending on how you download the file. Here is an example on Mac.
+
+build38 <- read.table("/Users/(yourname)/Desktop/analysisprep/GRCh38_hg38_rsIDs_only.txt.gz", header=TRUE)
+require(data.table)
+
+# reading in transformed .tar files for each chromosome. I manually performed this function for each individual chr though you 
+may shortcut this to include all chrs. Here is an example for chr1 and chr2 from the LTA target file.
+
+require(data.table)
+
+chr1 <- fread("/Users/(yourname)/Desktop/LTA_P01374_OID20586_v1_Inflammation/discovery_chr1_LTA:P01374:OID20586:v1:Inflammation")
+chr2 <- fread("/Users/(yourname)/Desktop/LTA_P01374_OID20586_v1_Inflammation/discovery_chr2_LTA:P01374:OID20586:v1:Inflammation")
+
+chr1$marker <- paste0(chr1$CHROM,":",chr1$GENPOS)
+chr1_formatted <- merge(chr1,build38,by="marker")
+
+chr2$marker <- paste0(chr2$CHROM,":",chr2$GENPOS)
+chr2_formatted <- merge(chr2,build38,by="marker")
+
+# read in the remainder chromosomes and format accordingly.
+
+LTA_formatted <- rbind(chr1_formatted, chr2_formatted, chr3_formatted, chr4_formatted, chr5_formatted, chr6_formatted, chr7_formatted, chr8_formatted,
+chr9_formatted, chr10_formatted, chr11_formatted, chr12_formatted, chr13_formatted, chr14_formatted, chr15_formatted, chr16_formatted,
+chr17_formatted, chr18_formatted, chr19_formatted, chr20_formatted, chr21_formatted, chr22_formatted)
+
+# add new column with adjusted p-values and remove "EXTRA" column included from exposure data.
+LTA_formatted <- LTA_formatted %>% mutate(transformedp = 10^-(LOG10P))
+
+LTA_formatted <- subset(LTA_formatted, select = -c(EXTRA) )
+
+# create new file containing only SNVs meeting the GWAS standard for significance
+LTA_threshold <- LTA_formatted %>% filter(transformedp < 5e-8)
+
+# I chose to write and read in these formatted files as .csv so that I could keep them as such in my desktop. This is optional though.
+
+write.csv(LTA_threshold, file = "LTA.csv")
+
+# perform these functions for the remainder targets
