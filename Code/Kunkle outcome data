@@ -1,1 +1,21 @@
+# download the necessary packages for MR
+library(TwoSampleMR)
+library(ieugwasr)
+library(data.table)
+library(dplyr)
 
+# I had the Kunkle data file as a .csv on my Mac so it was read in this way. Please adjust accordingly.
+
+# read in outcome data using TwoSampleMR column structure
+kunkle <- read_outcome_data(
+  "kunkle.csv", 
+  sep = ",", 
+  snp_col = "MarkerName", 
+  beta_col = "Beta", 
+  se_col = "SE", 
+  eaf_col = "Effect_allele_freq", 
+  effect_allele_col = "Effect_allele", 
+  other_allele_col = "Non_Effect_allele", 
+  pval_col = "Pvalue",
+  chr_col = "Chromosome",
+  pos_col = "Position")
