@@ -1,6 +1,6 @@
 # reading in GRCh38 rsID data. This may look differently depending on how you download the file. Here is an example on Mac.
 
-build38 <- read.table("/Users/(yourname)/Desktop/analysisprep/GRCh38_hg38_rsIDs_only.txt.gz", header=TRUE)
+build38 <- read.table("/Users/(yourname)/Desktop/GRCh38_hg38_rsIDs_only.txt.gz", header=TRUE)
 require(data.table)
 
 # reading in transformed .tar files for each chromosome. I manually performed this function for each individual chr though you 
