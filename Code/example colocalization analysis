@@ -188,3 +188,5 @@ cdf_results <- cdf$results
 cdf_summary <- cdf$summary
 
 plot(cdf)
+
+# repeat process with raw data for all targets.
