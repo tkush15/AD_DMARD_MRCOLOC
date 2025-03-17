@@ -5,5 +5,8 @@ Statistical code used for the paper, "Assessing the Causal Relevance of Actionab
 R version 4.2.3
 
 ## Analysis overview
+### Instrument-exposure data
+
+#### AD outcome data
 
 ## Included code
