@@ -34,7 +34,7 @@ LTA <- read_exposure_data(
   pval_col = "transformedp",
   min_pval = 1e-200,
   log_pval = FALSE,
-  chr_col = "chrom",
+  chr_col = "CHROM",
 )
 
 # harmonize clumped exposure data with outcome data and perform MR.
