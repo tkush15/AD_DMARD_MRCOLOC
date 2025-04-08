@@ -19,7 +19,7 @@ OPENGWAS_JWT= #paste your token here
 # check that the token is authenticated.
 user()
 
-# read in exposure data file and clump SNVs.
+# read in exposure data file and clump SNVs. If using the data provided in this github, change clump = FALSE. 
 
 LTA <- read_exposure_data(
   "LTA.csv",
