@@ -11,7 +11,7 @@ To instrument the selected DMARD targets — PLA2G1B, NFKB1, ACE2, LTA, FCGR2A,
 
 The .tar files for each target were manually downloaded and read into R using Mac Terminal. The data was then cleaned and reorganized to match the required structure for MR analysis (e.g., adding GRCh38 IDs, transforming -log10 p values, correcting column labels). GRCh38 ID data was sourced from Dr. Emma Anderson at the University of Bristol/University College London but may be downloaded from the NCBI as a .zip file.
 
-If you want to skip these steps, a file is included in this project containing the clumped SNVs that were used in MR analyses (SNVs for FCGR2A, LTA, IL6R, NFKB1 were lost in the server so I have provided new files with near equivalent significance results). However, in order to conduct colocalization analysis, the raw unclumped data must be used.
+If you want to skip these steps, a file is included in this project containing the clumped SNVs that were used in MR analyses (SNVs for FCGR2A, LTA, IL6R, were lost in the server so I have provided new files with near equivalent significance results). However, in order to conduct colocalization analysis, the raw unclumped data must be used.
 
 ### AD outcome data
 Outcome data was sourced from a large-scale GWAS on AD risk loci. Permission for access may be requested via The National Institute on Aging Genetics of Alzheimer’s Disease Data Storage Site repository (ID: NG00075).
