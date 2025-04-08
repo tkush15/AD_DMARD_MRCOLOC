@@ -6,9 +6,18 @@ For this code, I will continue to use LTA as an example.
 # ensure you have all downloaded packages for MR analysis.
 
 library(TwoSampleMR)
-install.packages("remotes")
+library(dplyr)
+library(ieugwasr)
 library(remotes)
-remotes::install_github("MRCIEU/TwoSampleMR")
+
+# in order to access the MR database, you may need to obtain/authenticate a token via https://api.opengwas.io/api/. Once you have the code,
+paste it into your R environment and restart R. This is the corresponding code.
+
+usethis::edit_r_environ()
+OPENGWAS_JWT= #paste your token here
+
+# check that the token is authenticated.
+user()
 
 # read in exposure data file and clump SNVs.
 
