@@ -1,4 +1,4 @@
-# download required packages.
+# download required packages. For this code, I will continue using LTA as an example.
 
 library(dplyr)
 library(plyr)
