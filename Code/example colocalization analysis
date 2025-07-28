@@ -68,9 +68,9 @@ kunkle <- rename(kunkle, c("eaf.outcome" = "A1F"))
 kunkle <- kunkle %>% mutate(N = 63296)
 kunkle <- kunkle %>% mutate(s = 21892/63296)
 
-# read in exposure data. You will need to use the unclumped, untouched data from the .tar file.
+# you will need to use the unclumped data from the .tar file that was formatted by reading in the exposure data in earlier steps.
 
-LTA <- read.csv("LTA_raw.csv")
+LTA <- LTA_formatted
 
 # transform p-value (similar to MR process) and edit out unncessary columns.
 
